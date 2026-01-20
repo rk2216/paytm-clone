@@ -1,4 +1,6 @@
 const express = require("express");
+const rootRouter = require("./routes/index")
 
 const app = express();
-XbrsP58b96ovZP55
+
+app.use('/api/v1', rootRouter);
