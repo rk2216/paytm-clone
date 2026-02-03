@@ -3,6 +3,7 @@ const z = require("zod");
 const jwt = require("jsonwebtoken");
 const { User } = require("../db");
 const { JWT_SECRET } = require("../config");
+const { authMiddleware } = require("../middleware");
 
 const userRouter = express.Router()
 
@@ -65,6 +66,49 @@ userRouter.post('/signin', async (req, res) => {
 
     res.json({
         token
+    });
+});
+
+userRouter.put('/', authMiddleware, async (req, res) => {
+    const UpdateUserInputSchema = z.object({
+        password: z.string().optional(),
+        firstName: z.string().optional(),
+        lastName: z.string().optional()
+    });
+
+    const userId = req.userId;
+    const inputValidation = UpdateUserInputSchema.safeParse(req.body);
+    if(!inputValidation.success) {
+        return res.status(411).json({
+            message: "Incorrect inputs " + inputValidation.error
+        });
+    }
+
+    const input = inputValidation.data;
+
+    try {
+        await User.updateOne({_id: userId}, input);
+        res.status(200).json({message: "Updated successfully"});
+        return;
+    } catch (err) {
+        console.error("Error occurred while updating user in DB", err);
+        res.status(411).json({message: "Error while updating information"});
+    }
+});
+
+userRouter.get('/bulk', authMiddleware, async (req, res) => {
+    const filter = req.query.filter || '';
+    const users = await User.find({
+            $or: [
+                { firstName: {$regex: filter, $options: 'i'}},
+                { lastName: {$regex: filter, $options: 'i'}}
+            ]
+        },
+        '_id firstName lastName'
+    ).exec();
+
+    res.status(200).json({
+        users
     });
 });
 
