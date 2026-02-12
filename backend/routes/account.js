@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const { User, Account } = require("../db");
 const { JWT_SECRET } = require("../config");
 const { authMiddleware } = require("../middleware");
+const mongoose = require('mongoose');
 
 const accountRouter = express.Router();
 
@@ -54,5 +55,4 @@ accountRouter.post('/transfer', authMiddleware, async(req, res) => {
     });
 });
 
-
-export default accountRouter;
+module.exports = accountRouter;

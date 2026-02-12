@@ -11,14 +11,14 @@ userRouter.post('/signup', async (req, res) => {
     const SignUpInputSchema = z.object({
         username: z.email().min(3),
         password: z.string().min(6),
-        firstName: z.string().max(30),
-        password: z.string().max(30),
+        firstName: z.string().max(50),
+        lastName: z.string().max(50),
     });
 
     const inputValidation = SignUpInputSchema.safeParse(req.body);
     if(!inputValidation.success) {
         return res.status(411).json({
-            message: "Incorrect inputs " + inputValidation.error
+            message: "Incorrect inputs " + JSON.stringify(inputValidation.error)
         });
     }
     const input = inputValidation.data
@@ -53,11 +53,11 @@ userRouter.post('/signin', async (req, res) => {
     const inputValidation = SignInInputSchema.safeParse(req.body);
     if(!inputValidation.success) {
         return res.status(411).json({
-            message: "Incorrect inputs " + inputValidation.error
+            message: "Incorrect inputs " + JSON.stringify(inputValidation.error)
         });
     }
 
-    const input = inputValidation.data
+    const input = inputValidation.data;
 
     const existingValidUser = await User.findOne(input).exec();
     if(!existingValidUser) {
@@ -85,7 +85,7 @@ userRouter.put('/', authMiddleware, async (req, res) => {
     const inputValidation = UpdateUserInputSchema.safeParse(req.body);
     if(!inputValidation.success) {
         return res.status(411).json({
-            message: "Incorrect inputs " + inputValidation.error
+            message: "Incorrect inputs " + JSON.stringify(inputValidation.error)
         });
     }
 
@@ -117,4 +117,4 @@ userRouter.get('/bulk', authMiddleware, async (req, res) => {
     });
 });
 
-export default userRouter;
+module.exports = userRouter;

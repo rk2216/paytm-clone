@@ -1,12 +1,12 @@
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('./config');
 
-export const authMiddleware = (req, res, next) => {
+const authMiddleware = (req, res, next) => {
     const headers = req.headers;
     const authorization = headers.authorization;
 
     if(!authorization || !authorization.startsWith('Bearer ')) {
-        res.status(403).json({message: 'Missig access token'});
+        res.status(403).json({message: 'Missing access token'});
         return;
     }
     const token = (authorization.split(" "))[1];
@@ -20,3 +20,5 @@ export const authMiddleware = (req, res, next) => {
         res.status(403).json({message: 'Invalid access token'});
     }
 }
+
+module.exports = { authMiddleware };
