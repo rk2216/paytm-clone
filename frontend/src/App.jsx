@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Signup } from './components/Signup';
+import { Signup } from './pages/Signup';
+import { Signin } from './pages/Signin';
 
 function App() {
 
@@ -15,10 +16,6 @@ function App() {
   )
 }
 
-
-function Signin () {
-  return (<p>Sign in</p>);
-}
 function Dashboard () {
   return (<p>Dashboard</p>);
 }
